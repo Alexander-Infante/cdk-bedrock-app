@@ -34,6 +34,8 @@ AWS Bedrock is a fully managed service that provides easy access to high-perform
 - Customize models to your specific use case
 
 ## Project Structure
+
+```
 .
 ├── bin/
 │   └── cdk-bedrock-pipeline.ts    # CDK app entry point
@@ -50,6 +52,7 @@ AWS Bedrock is a fully managed service that provides easy access to high-perform
 ├── package.json
 ├── tsconfig.json
 └── README.md
+```
 
 ## How It Works
 
@@ -68,10 +71,16 @@ AWS Bedrock is a fully managed service that provides easy access to high-perform
 
 1. Clone this repository
 2. Install dependencies:
+```
 npm install
+```
+
 3. Create a `.env` file in the root directory with your AWS account details:
+```
 CDK_DEFAULT_ACCOUNT=your-account-number
 CDK_DEFAULT_REGION=your-preferred-region
+```
+
 4. Deploy the pipeline:
 npx cdk deploy CdkPipelineStack
 
