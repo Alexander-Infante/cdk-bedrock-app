@@ -1,0 +1,18 @@
+{
+    "name": "query-bedrock",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@aws-sdk/client-bedrock-runtime": "^3.631.0",
+        "aws-lambda": "^1.0.7",
+        "jsonwebtoken": "^8.5.1"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.137",
+        "@types/jsonwebtoken": "^8.5.9",
+        "typescript": "^4.6.4"
+    }
+}

@@ -8,20 +8,24 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "install-all": "find . -name 'package.json' -not -path '**/node_modules/*' -execdir npm install \\;",
+    "build-all": "npm run install-all && find . -name 'package.json' -not -path '**/node_modules/*' -execdir npm run build \\;",
+    "clean": "find . -type f -name '*.js' -not -path '**/node_modules/*' -delete && find . -type f -name '*.d.ts' -not -path '**/node_modules/*' -delete"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "20.11.19",
+    "aws-cdk": "2.132.1",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.2",
-    "aws-cdk": "2.132.1",
     "ts-node": "^10.9.2",
     "typescript": "~5.3.3"
   },
   "dependencies": {
     "aws-cdk-lib": "2.132.1",
     "constructs": "^10.0.0",
+    "dotenv": "^16.4.5",
     "source-map-support": "^0.5.21"
   }
 }
