@@ -11,6 +11,10 @@ https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_in
 6. Bootstrap your CDK environment for your AWS Account
 https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_bootstrap
 
+## Architecture Overview
+![Architecture_Photo](photos/CDK_Bedrock.png)
+
+
 # Welcome to your CDK TypeScript project
 
 This is a blank project for CDK development with TypeScript.
