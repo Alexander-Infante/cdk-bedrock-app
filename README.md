@@ -15,11 +15,23 @@ This project demonstrates how to build and deploy an API that leverages AWS Bedr
 
 ## Getting Started
 
-1. Clone this repository
-2. Install dependencies in the root directory:
+1. Clone this repository and install dependencies in the root directory:
 ```
 npm install
 ```
+
+2. Create a Github Access Token
+2a. Navigate to Github -> Settings -> Developer Settings -> Personal Access Tokens -> Tokens (classic)
+2b. Click `Generate new token (classic)` and select the following settings:
+- repo (all)
+- admin:repo_hook (all)
+
+2c. Put the token in AWS SecretsManager
+- Navigate to the AWS Console and click on SecretsManager, click on `Store a new secret`
+- `Other type of secret` -> `Plaintext`
+- Delete the JSON object and paste in the Github Access Token from the previous step
+- Name the token, you can keep it as `github-token` as shown in the `.env` file below, or whichever name you want
+- No rotation or other configurations for now
 
 3. Create an IAM user for you to grant access to deploy
 NOTE: It is better to use AWS SSO to manage your users, but in the interest of time we are making a very simplified user to test locally.
@@ -50,13 +62,13 @@ cdk bootstrap --profile <insert name here>
 ```
 6b. CDK Deploy the stack
 ```
-cdk deploy CdkPipelineStack --profile <insert name here>
+cdk deploy --profile <insert name here>
 ```
 
 7. Monitor CloudFormation TODO
 8. Monitor CodePipeline TODO
-9. Look at AWS API Gateway
-10. 
+9. Postman TODO 
+10. Monitor AWS Lambda and Cloudwatch TODO
 
 ## Architecture Overview
 ![Architecture_Photo](photos/CDK_Bedrock.png)
