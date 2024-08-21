@@ -18,7 +18,7 @@ export class CdkPipelineStack extends cdk.Stack {
      * Make sure to make the strings match.
      */
     const githubAccessToken = cdk.SecretValue.secretsManager(
-      process.env.GITHUB_TOKEN!
+      process.env.GITHUB_TOKEN! || "github-token"
     );
 
     /**
