@@ -21,21 +21,42 @@ This project demonstrates how to build and deploy an API that leverages AWS Bedr
 npm install
 ```
 
-3. Create a `.env` file in the root directory with your AWS account details:
+3. Create an IAM user for you to grant access to deploy
+NOTE: It is better to use AWS SSO to manage your users, but in the interest of time we are making a very simplified user to test locally.
+
+3a. Navigate to the IAM section within the AWS Console and click on `Users`
+3b. Click `Create User`, give it a name that you will remember (in my case, it's `alex_cs_cli`), and do NOT click `Provide user access to the AWS Management Console`
+3c. For simplicity, just select `Attach Policies Directly` and grant `AdministratorAccess`
+3d. Click `Create User`
+3e. Navigate to that new user and click `Create access key` and save those keys securely somewhere
+
+4. Configure your AWS profile locally
+4a. Run `aws configure --profile <insert name here>` in your terminal
+4b. Paste in the AccessKey and SecretAccessKey from the step before
+4c. `us-east-1` and `json` respectively, all lowercase
+
+5. Create a `.env` file in the root directory with your AWS account details:
 ```
-CDK_DEFAULT_ACCOUNT=your-account-number
-CDK_DEFAULT_REGION=your-preferred-region
+CDK_DEFAULT_ACCOUNT=0123456
+CDK_DEFAULT_REGION=us-east-1
+GITHUB_TOKEN=github-token
+GITHUB_REPO=Alexander-Infante/cdk-bedrock-app
 ```
 
-4. Deploy the pipeline:
+6. Deploy the pipeline:
+6a. CDK Bootstrap for your AWS Account
 ```
-cdk deploy CdkPipelineStack
+cdk bootstrap --profile <insert name here>
+```
+6b. CDK Deploy the stack
+```
+cdk deploy CdkPipelineStack --profile <insert name here>
 ```
 
-5. Monitor CloudFormation TODO
-6. Monitor CodePipeline TODO
-7. Look at AWS API Gateway
-8. 
+7. Monitor CloudFormation TODO
+8. Monitor CodePipeline TODO
+9. Look at AWS API Gateway
+10. 
 
 ## Architecture Overview
 ![Architecture_Photo](photos/CDK_Bedrock.png)

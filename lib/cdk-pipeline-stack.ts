@@ -18,7 +18,7 @@ export class CdkPipelineStack extends cdk.Stack {
      * Make sure to make the strings match.
      */
     const githubAccessToken = cdk.SecretValue.secretsManager(
-      "super-secret-github-token"
+      process.env.GITHUB_TOKEN!
     );
 
     /**
@@ -33,7 +33,7 @@ export class CdkPipelineStack extends cdk.Stack {
       pipelineName: "CdkCodePipeline",
       synth: new pipelines.ShellStep("Synth", {
         input: pipelines.CodePipelineSource.gitHub(
-          "github-repository-name",
+          process.env.GITHUB_REPO!,
           "main",
           {
             authentication: githubAccessToken,
