@@ -13,6 +13,30 @@ This project demonstrates how to build and deploy an API that leverages AWS Bedr
 6. CDK environment bootstrapped for your AWS Account
    - [Bootstrapping guide](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_bootstrap)
 
+## Getting Started
+
+1. Clone this repository
+2. Install dependencies in the root directory:
+```
+npm install
+```
+
+3. Create a `.env` file in the root directory with your AWS account details:
+```
+CDK_DEFAULT_ACCOUNT=your-account-number
+CDK_DEFAULT_REGION=your-preferred-region
+```
+
+4. Deploy the pipeline:
+```
+cdk deploy CdkPipelineStack
+```
+
+5. Monitor CloudFormation TODO
+6. Monitor CodePipeline TODO
+7. Look at AWS API Gateway
+8. 
+
 ## Architecture Overview
 ![Architecture_Photo](photos/CDK_Bedrock.png)
 
@@ -66,23 +90,6 @@ AWS Bedrock is a fully managed service that provides easy access to high-perform
 5. The Lambda function sends the request data to Bedrock for analysis.
 6. Bedrock processes the data and returns a summary.
 7. The Lambda function returns this summary as the API response.
-
-## Getting Started
-
-1. Clone this repository
-2. Install dependencies:
-```
-npm install
-```
-
-3. Create a `.env` file in the root directory with your AWS account details:
-```
-CDK_DEFAULT_ACCOUNT=your-account-number
-CDK_DEFAULT_REGION=your-preferred-region
-```
-
-4. Deploy the pipeline:
-npx cdk deploy CdkPipelineStack
 
 ## Useful Commands
 
