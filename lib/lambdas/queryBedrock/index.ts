@@ -33,19 +33,16 @@ export const handler = async function (
 
   try {
     // Parse the request body
-    const body = JSON.parse(event.body || "{}");
-    const data = body.data;
+    const { data } = JSON.parse(event.body || "{}");
 
-    if (!data || typeof data !== "string") {
+    if (typeof data !== "string") {
       return {
         statusCode: 400,
-        headers: headers,
         body: JSON.stringify({
-          error: "Invalid input. 'data' property must be a string.",
+          error: "Invalid input. 'data' must be a string.",
         }),
       };
     }
-
     // Prepare the prompt for Bedrock
     const prompt = `Summarize the following data:\n\n${data}`;
 
