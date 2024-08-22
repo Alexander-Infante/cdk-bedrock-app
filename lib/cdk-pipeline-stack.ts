@@ -17,13 +17,12 @@ export class CdkPipelineStack extends cdk.Stack {
      * Then you also need to add that as plaintext inside of AWS SecretsManager.
      * Make sure to make the strings match.
      */
-    const githubAccessToken = cdk.SecretValue.secretsManager("github-token")!;
+    const githubAccessToken = cdk.SecretValue.secretsManager("github-token");
     const cdkDefaultAccount = cdk.SecretValue.secretsManager(
       "cdk-default-account"
-    )!;
-    const cdkDefaultRegion =
-      cdk.SecretValue.secretsManager("cdk-default-region")!;
-    const githubRepo = cdk.SecretValue.secretsManager("github-repo")!;
+    ).unsafeUnwrap();
+    const cdkDefaultRegion = "us-east-1";
+    const githubRepo = "Alexander-Infante/cdk-bedrock-app";
 
     /**
      * This CodePipeline does a few steps in the code below
@@ -36,13 +35,9 @@ export class CdkPipelineStack extends cdk.Stack {
     const pipeline = new pipelines.CodePipeline(this, "CdkCodePipeline", {
       pipelineName: "CdkCodePipeline",
       synth: new pipelines.ShellStep("Synth", {
-        input: pipelines.CodePipelineSource.gitHub(
-          githubRepo.toString(),
-          "main",
-          {
-            authentication: githubAccessToken,
-          }
-        ),
+        input: pipelines.CodePipelineSource.gitHub(githubRepo, "main", {
+          authentication: githubAccessToken,
+        }),
         commands: ["npm i", "npm run build-all", "npx cdk synth"],
       }),
     });
@@ -56,8 +51,8 @@ export class CdkPipelineStack extends cdk.Stack {
     const devStage = new cdk.Stage(this, "DevStage");
     const cdkBedrockDev = new CdkBedrockAppStack(devStage, "CDKBedrock-Dev", {
       env: {
-        account: cdkDefaultAccount.toString(),
-        region: cdkDefaultRegion.toString(),
+        account: cdkDefaultAccount,
+        region: cdkDefaultRegion,
       },
       stackName: "CDKBedrock-Dev",
       description: "Querying AWS Bedrock Stack - Dev",
@@ -78,8 +73,8 @@ export class CdkPipelineStack extends cdk.Stack {
       "CDKBedrock-Prod",
       {
         env: {
-          account: cdkDefaultAccount.toString(),
-          region: cdkDefaultRegion.toString(),
+          account: cdkDefaultAccount,
+          region: cdkDefaultRegion,
         },
         stackName: "CDKBedrock-Prod",
         description: "Querying AWS Bedrock Stack - Prod",
