@@ -17,9 +17,13 @@ export class CdkPipelineStack extends cdk.Stack {
      * Then you also need to add that as plaintext inside of AWS SecretsManager.
      * Make sure to make the strings match.
      */
-    const githubAccessToken = cdk.SecretValue.secretsManager(
-      process.env.GITHUB_TOKEN! || "github-token"
-    );
+    const githubAccessToken = cdk.SecretValue.secretsManager("github-token")!;
+    const cdkDefaultAccount = cdk.SecretValue.secretsManager(
+      "cdk-default-account"
+    )!;
+    const cdkDefaultRegion =
+      cdk.SecretValue.secretsManager("cdk-default-region")!;
+    const githubRepo = cdk.SecretValue.secretsManager("github-repo")!;
 
     /**
      * This CodePipeline does a few steps in the code below
@@ -33,7 +37,7 @@ export class CdkPipelineStack extends cdk.Stack {
       pipelineName: "CdkCodePipeline",
       synth: new pipelines.ShellStep("Synth", {
         input: pipelines.CodePipelineSource.gitHub(
-          process.env.GITHUB_REPO!,
+          githubRepo.toString(),
           "main",
           {
             authentication: githubAccessToken,
@@ -52,8 +56,8 @@ export class CdkPipelineStack extends cdk.Stack {
     const devStage = new cdk.Stage(this, "DevStage");
     const cdkBedrockDev = new CdkBedrockAppStack(devStage, "CDKBedrock-Dev", {
       env: {
-        account: process.env.CDK_DEFAULT_ACCOUNT,
-        region: process.env.CDK_DEFAULT_REGION,
+        account: cdkDefaultAccount.toString(),
+        region: cdkDefaultRegion.toString(),
       },
       stackName: "CDKBedrock-Dev",
       description: "Querying AWS Bedrock Stack - Dev",
@@ -74,8 +78,8 @@ export class CdkPipelineStack extends cdk.Stack {
       "CDKBedrock-Prod",
       {
         env: {
-          account: process.env.CDK_DEFAULT_ACCOUNT,
-          region: process.env.CDK_DEFAULT_REGION,
+          account: cdkDefaultAccount.toString(),
+          region: cdkDefaultRegion.toString(),
         },
         stackName: "CDKBedrock-Prod",
         description: "Querying AWS Bedrock Stack - Prod",
