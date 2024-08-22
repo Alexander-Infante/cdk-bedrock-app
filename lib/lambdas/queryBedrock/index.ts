@@ -55,29 +55,33 @@ export const handler = async function (
      */
 
     // Invoke Bedrock model
-    const params = {
-      modelId: "amazon.titan-text-express-v1", // You can change this to your preferred model
+    const command = new InvokeModelCommand({
+      modelId: "anthropic.claude-3-haiku-20240307-v1:0",
       contentType: "application/json",
       accept: "application/json",
       body: JSON.stringify({
-        prompt: prompt,
-        max_tokens_to_sample: 300,
+        anthropic_version: "bedrock-2023-05-31",
+        messages: [
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        max_tokens: 300,
         temperature: 0.5,
         top_p: 1,
+        top_k: 250,
       }),
-    };
+    });
 
-    const command = new InvokeModelCommand(params);
     const response = await bedrockClient.send(command);
-
-    // Parse the Bedrock response
     const responseBody = JSON.parse(new TextDecoder().decode(response.body));
-    const summary = responseBody.completion;
+    const responseText = responseBody.content[0].text;
 
     return {
       statusCode: 200,
       headers: headers,
-      body: JSON.stringify({ summary: summary }),
+      body: JSON.stringify({ responseText: responseText }),
     };
   } catch (error) {
     console.error("Error:", error);
@@ -86,6 +90,7 @@ export const handler = async function (
       headers: headers,
       body: JSON.stringify({
         error: "An error occurred while processing your request.",
+        message: error,
       }),
     };
   }
