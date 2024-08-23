@@ -9,7 +9,7 @@ export const handler = async (event: any): Promise<any> => {
   try {
     const requestBody = JSON.parse(event.body);
 
-    const prompt = `Summarize the following data: ${requestBody}`;
+    const prompt = `Summarize the following data: ${requestBody.text}`;
 
     const command = new InvokeModelCommand({
       modelId: "anthropic.claude-3-haiku-20240307-v1:0",
