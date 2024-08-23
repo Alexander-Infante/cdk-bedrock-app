@@ -32,12 +32,17 @@ export const handler = async function (
   console.log("request:", JSON.stringify(event, undefined, 4));
 
   try {
-    // Parse the request body
-    const { data } = JSON.parse(event.body || "{}");
+    if (!event.body) {
+      throw new Error("Missing request body");
+    }
+
+    const requestBody = JSON.parse(event.body);
+    const data = requestBody.data;
 
     if (typeof data !== "string") {
       return {
         statusCode: 400,
+        headers,
         body: JSON.stringify({
           error: "Invalid input. 'data' must be a string.",
         }),
