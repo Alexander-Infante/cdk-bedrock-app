@@ -6,6 +6,15 @@ import {
 const bedrockClient = new BedrockRuntimeClient({ region: "us-east-1" }); // Replace with your desired region
 
 export const handler = async (event: any): Promise<any> => {
+
+  const headers = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*", // Update this to your specific domain in production
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+    "Access-Control-Allow-Methods": "OPTIONS,POST"
+  };
+
   try {
     const requestBody = JSON.parse(event.body);
 
@@ -36,12 +45,14 @@ export const handler = async (event: any): Promise<any> => {
 
     return {
       statusCode: 200,
+      headers: headers,
       body: JSON.stringify(responseBodyText),
     };
   } catch (error) {
     console.error("Error:", error);
     return {
       statusCode: 500,
+      headers: headers,
       body: JSON.stringify({
         error: "An error occurred while processing the request",
       }),
