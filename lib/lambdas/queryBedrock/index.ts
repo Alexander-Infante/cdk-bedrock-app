@@ -11,26 +11,32 @@ export const handler = async (event: any): Promise<any> => {
 
     const prompt = `Summarize the following data: ${requestBody}`;
 
-    const input = {
+    const command = new InvokeModelCommand({
       modelId: "anthropic.claude-3-haiku-20240307-v1:0",
       contentType: "application/json",
       accept: "application/json",
       body: JSON.stringify({
-        prompt: prompt,
-        max_tokens_to_sample: 300,
-        temperature: 0.7,
-        top_p: 1,
+        anthropic_version: "bedrock-2023-05-31",
+        messages: [
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        max_tokens: 500, // response tokens (1 token = 4 characters)
+        temperature: 0.3, // from 0 (deterministic, focused responses) to 1 (random, creative responses)
+        top_p: 0.8, // probability distribution. from 0 (most common tokens) to 1 (least common tokens)
+        top_k: 150, // the amount of tokens available for consideration at each step (from 1 to size model's entire vocab but common range is 10 to 200)
       }),
-    };
+    });
 
-    const command = new InvokeModelCommand(input);
     const response = await bedrockClient.send(command);
-
     const responseBody = JSON.parse(new TextDecoder().decode(response.body));
+    const responseBodyText = responseBody.content[0].text;
 
     return {
       statusCode: 200,
-      body: JSON.stringify(responseBody),
+      body: JSON.stringify(responseBodyText),
     };
   } catch (error) {
     console.error("Error:", error);
