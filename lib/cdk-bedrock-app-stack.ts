@@ -15,8 +15,8 @@ export class CdkBedrockAppStack extends cdk.Stack {
 
     /**
      * API Gateway acts as the interface to interact with your compute runtime. This
-     * is the entry point for your application. 
-     * 
+     * is the entry point for your application.
+     *
      * https://aws.amazon.com/api-gateway/features/
      */
     const api = new apigateway.RestApi(this, `BedrockAPI-${props.stageName}`, {
@@ -28,10 +28,10 @@ export class CdkBedrockAppStack extends cdk.Stack {
      * AWS Lambda is a compute for your application. In the code: *path part, you
      * can see how to navigate to the actual code that is executed by the Lambda
      * function here. This specific setup is for Node.js Lambdas.
-     * 
+     *
      * NOTE: handler: "index.handler" means the actual code is written in a
      * file called "index" (index.ts in our case) and the function name
-     * is called "handler", these can be changed easily. You can have 
+     * is called "handler", these can be changed easily. You can have
      * "pug.beagle" if you wanted to, but index.handler is convention.
      */
     const queryBedrockLambda = new lambda.Function(
@@ -46,6 +46,7 @@ export class CdkBedrockAppStack extends cdk.Stack {
         environment: {
           STAGE_NAME: props!.stageName,
         },
+        timeout: cdk.Duration.seconds(30),
       }
     );
 
