@@ -33,42 +33,55 @@ npm install
 - Name the token, you can keep it as `github-token` as shown in the `.env` file below, or whichever name you want
 - No rotation or other configurations for now
 
-3. Create an IAM user for you to grant access to deploy
+3. Get AWS Bedrock Access
+Naviagte to Bedrock in the AWS Console, and towards the bottom left find `Model access` and get all model access
+NOTE: This repo uses Anthropic Claude3 Haiku, so it is important to get that model (unless you want to change it)
+
+4. Create an IAM user for you to grant access to deploy
 NOTE: It is better to use AWS SSO to manage your users, but in the interest of time we are making a very simplified user to test locally.
 
-3a. Navigate to the IAM section within the AWS Console and click on `Users`
-3b. Click `Create User`, give it a name that you will remember (in my case, it's `alex_cs_cli`), and do NOT click `Provide user access to the AWS Management Console`
-3c. For simplicity, just select `Attach Policies Directly` and grant `AdministratorAccess`
-3d. Click `Create User`
-3e. Navigate to that new user and click `Create access key` and save those keys securely somewhere
+4a. Navigate to the IAM section within the AWS Console and click on `Users`
+4b. Click `Create User`, give it a name that you will remember (in my case, it's `alex_cs_cli`), and do NOT click `Provide user access to the AWS Management Console`
+4c. For simplicity, just select `Attach Policies Directly` and grant `AdministratorAccess`
+4d. Click `Create User`
+4e. Navigate to that new user and click `Create access key` and save those keys securely somewhere
 
-4. Configure your AWS profile locally
-4a. Run `aws configure --profile <insert name here>` in your terminal
-4b. Paste in the AccessKey and SecretAccessKey from the step before
-4c. `us-east-1` and `json` respectively, all lowercase
+5. Configure your AWS profile locally
+5a. Run `aws configure --profile <insert name here>` in your terminal
+5b. Paste in the AccessKey and SecretAccessKey from the step before
+5c. `us-east-1` and `json` respectively, all lowercase
 
-5. Create a `.env` file in the root directory with your AWS account details:
+6. Configure your specific values within SecretsManager and your code
+6a. Follow the steps above (in 2c) to place in this plaintext value into SecretsManager
+Secret name: `cdk-default-account`
+Secret plaintext value: <your AWS Account ID, found in the top right corner of the console>
+6b. Adjust these lines for your repo
+lib/cdk-pipeline-stack.ts
 ```
-CDK_DEFAULT_ACCOUNT=0123456
-CDK_DEFAULT_REGION=us-east-1
-GITHUB_TOKEN=github-token
-GITHUB_REPO=Alexander-Infante/cdk-bedrock-app
+const cdkDefaultRegion = "us-east-1";
+const githubRepo = "Alexander-Infante/cdk-bedrock-app";
 ```
 
-6. Deploy the pipeline:
-6a. CDK Bootstrap for your AWS Account
+7. Deploy the pipeline:
+7a. CDK Bootstrap for your AWS Account
 ```
 cdk bootstrap --profile <insert name here>
 ```
-6b. CDK Deploy the stack
+7b. CDK Synth to check everything
+```
+cdk synth --profile <insert name here>
+```
+7c. CDK Deploy the stack
 ```
 cdk deploy --profile <insert name here>
 ```
 
-7. Monitor CloudFormation TODO
-8. Monitor CodePipeline TODO
-9. Postman TODO 
-10. Monitor AWS Lambda and Cloudwatch TODO
+8. Monitor CloudFormation TODO
+9. Monitor CodePipeline TODO
+10. Monitor CloudFormation TODO
+11. API Gateway
+12. Postman TODO 
+13. Monitor AWS Lambda and Cloudwatch TODO
 
 ## Architecture Overview
 ![Architecture_Photo](photos/CDK_Bedrock.png)
