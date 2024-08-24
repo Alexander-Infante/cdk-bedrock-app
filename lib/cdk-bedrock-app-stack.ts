@@ -22,6 +22,9 @@ export class CdkBedrockAppStack extends cdk.Stack {
     const api = new apigateway.RestApi(this, `BedrockAPI-${props.stageName}`, {
       restApiName: `Bedrock API ${props.stageName}`,
       description: `API Gateway for Bedrock queries - ${props.stageName}`,
+      deployOptions: {
+        stageName: props.stageName,
+      },
     });
 
     /**

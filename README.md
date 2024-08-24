@@ -21,7 +21,9 @@ npm install
 ```
 
 2. Create a Github Access Token
+
 2a. Navigate to Github -> Settings -> Developer Settings -> Personal Access Tokens -> Tokens (classic)
+
 2b. Click `Generate new token (classic)` and select the following settings:
 - repo (all)
 - admin:repo_hook (all)
@@ -30,20 +32,32 @@ npm install
 - Navigate to the AWS Console and click on SecretsManager, click on `Store a new secret`
 - `Other type of secret` -> `Plaintext`
 - Delete the JSON object and paste in the Github Access Token from the previous step
-- Name the token, you can keep it as `github-token` as shown in the `.env` file below, or whichever name you want
+- Name the token, you can keep it as `github-token`
 - No rotation or other configurations for now
+
+2d. Follow the steps above (in 2c) to place in this plaintext value into SecretsManager
+- Secret name: `cdk-default-account`
+- Secret plaintext value: <your AWS Account ID, found in the top right corner of the console>
+
+![SecretsManager_Photo](photos/SecretsManager.png)
 
 3. Get AWS Bedrock Access
 Naviagte to Bedrock in the AWS Console, and towards the bottom left find `Model access` and get all model access
 NOTE: This repo uses Anthropic Claude3 Haiku, so it is important to get that model (unless you want to change it)
 
+![BedrockAccess_Photo](photos/BedrockAccess.png)
+
 4. Create an IAM user for you to grant access to deploy
 NOTE: It is better to use AWS SSO to manage your users, but in the interest of time we are making a very simplified user to test locally.
 
 4a. Navigate to the IAM section within the AWS Console and click on `Users`
+
 4b. Click `Create User`, give it a name that you will remember (in my case, it's `alex_cs_cli`), and do NOT click `Provide user access to the AWS Management Console`
+
 4c. For simplicity, just select `Attach Policies Directly` and grant `AdministratorAccess`
+
 4d. Click `Create User`
+
 4e. Navigate to that new user and click `Create access key` and save those keys securely somewhere
 
 5. Configure your AWS profile locally
@@ -51,11 +65,11 @@ NOTE: It is better to use AWS SSO to manage your users, but in the interest of t
 5b. Paste in the AccessKey and SecretAccessKey from the step before
 5c. `us-east-1` and `json` respectively, all lowercase
 
-6. Configure your specific values within SecretsManager and your code
-6a. Follow the steps above (in 2c) to place in this plaintext value into SecretsManager
-Secret name: `cdk-default-account`
-Secret plaintext value: <your AWS Account ID, found in the top right corner of the console>
-6b. Adjust these lines for your repo
+![IAM_Setup_Photo](photos/IAM_Setup.png)
+
+6. Configure your specific repo and region values in your code
+
+6a. Adjust these lines for your repo
 lib/cdk-pipeline-stack.ts
 ```
 const cdkDefaultRegion = "us-east-1";
@@ -76,12 +90,71 @@ cdk synth --profile <insert name here>
 cdk deploy --profile <insert name here>
 ```
 
-8. Monitor CloudFormation TODO
-9. Monitor CodePipeline TODO
-10. Monitor CloudFormation TODO
+8. Monitor CloudFormation for the CodePipeline Stack
+
+
+9. Monitor CodePipeline Deployment
+
+
+10. Monitor CloudFormation for the CdkBedrockAppStack
+
+
 11. API Gateway
-12. Postman TODO 
+
+
+12. Postman/ cURL request to `POST` `/v1/analysis` with a request body
+
+Sample request body
+```
+{
+  "kubernetes_cluster_metrics": [
+    {
+      "cluster_name": "prod-cluster-1",
+      "node_count": 10,
+      "cpu_usage_percent": 68.5,
+      "memory_usage_percent": 75.2,
+      "pod_count": 87,
+      "timestamp": "2024-08-23T14:30:00Z"
+    },
+    {
+      "cluster_name": "dev-cluster-2",
+      "node_count": 5,
+      "cpu_usage_percent": 42.3,
+      "memory_usage_percent": 58.7,
+      "pod_count": 35,
+      "timestamp": "2024-08-23T14:30:00Z"
+    },
+    {
+      "cluster_name": "staging-cluster-1",
+      "node_count": 7,
+      "cpu_usage_percent": 55.1,
+      "memory_usage_percent": 63.9,
+      "pod_count": 62,
+      "timestamp": "2024-08-23T14:30:00Z"
+    },
+    {
+      "cluster_name": "prod-cluster-2",
+      "node_count": 12,
+      "cpu_usage_percent": 78.9,
+      "memory_usage_percent": 82.4,
+      "pod_count": 105,
+      "timestamp": "2024-08-23T14:30:00Z"
+    },
+    {
+      "cluster_name": "test-cluster-1",
+      "node_count": 3,
+      "cpu_usage_percent": 25.7,
+      "memory_usage_percent": 40.3,
+      "pod_count": 18,
+      "timestamp": "2024-08-23T14:30:00Z"
+    }
+  ]
+}
+```
+
 13. Monitor AWS Lambda and Cloudwatch TODO
+
+
 
 ## Architecture Overview
 ![Architecture_Photo](photos/CDK_Bedrock.png)
