@@ -25,7 +25,7 @@ export const handler = async (event: any): Promise<any> => {
      * This adjusting of the prompt is called "Prompt Engineering"
      * https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview
      */
-    const prompt = `Summarize the following data: ${requestBody.text}`;
+    const prompt = `Summarize the following data: ${JSON.stringify(requestBody.inputData)}`;
 
     /**
      * NOTE: Different models expect different parameteres for the InvokeModelCommand
