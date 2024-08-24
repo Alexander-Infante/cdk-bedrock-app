@@ -91,69 +91,87 @@ cdk deploy --profile <insert name here>
 ```
 
 8. Monitor CloudFormation for the CodePipeline Stack
+Navigate over the the AWS Console -> CloudFormation to ensure the CodePipeline Stack deploys properly. I like to monitor the `Events` tab.
+![Pipeline_Cfn_Photo](photos/Pipeline_Cfn.png)
 
 
 9. Monitor CodePipeline Deployment
+You can see your CI/CD Pipeline by navigating to the AWS Console -> CodePipeline => `CdkCodePipeline`
+Note the steps that it takes to deploy your application and ensure each of them succeeds. For now, let's make sure this works up to our `Dev` Environment and proceed with testing. Once that passes, we can promote this to our `Production` environment.
 
+![Pipeline_Photo](photos/CodePipeline.png)
 
 10. Monitor CloudFormation for the CdkBedrockAppStack
+Similar to the steps above, monitor CloudFormation (I prefer to look at `Events`) to ensure your deployment succeeds for the main CDK Bedrock App Stack.
+NOTE that this stack is a stand alone for the `Dev` environment.
+![CdkApp_Photo](photos/App_Cfn.png)
 
 
 11. API Gateway
+Now we navigate over the the AWS Console -> API Gateway -> Bedrock API dev -> Stages
+Here we can see the `Dev` stage for our API Gateway, and are able to copy the `Invoke URL` for testing in the next step.
+![ApiGateway_Photo](photos/API_GW.png)
 
-
-12. Postman/ cURL request to `POST` `/v1/analysis` with a request body
+12. Postman/ cURL request to `POST`  <Invoke URL> + `/v1/analysis` with a request body
 
 Sample request body
 ```
 {
-  "kubernetes_cluster_metrics": [
-    {
-      "cluster_name": "prod-cluster-1",
-      "node_count": 10,
-      "cpu_usage_percent": 68.5,
-      "memory_usage_percent": 75.2,
-      "pod_count": 87,
-      "timestamp": "2024-08-23T14:30:00Z"
-    },
-    {
-      "cluster_name": "dev-cluster-2",
-      "node_count": 5,
-      "cpu_usage_percent": 42.3,
-      "memory_usage_percent": 58.7,
-      "pod_count": 35,
-      "timestamp": "2024-08-23T14:30:00Z"
-    },
-    {
-      "cluster_name": "staging-cluster-1",
-      "node_count": 7,
-      "cpu_usage_percent": 55.1,
-      "memory_usage_percent": 63.9,
-      "pod_count": 62,
-      "timestamp": "2024-08-23T14:30:00Z"
-    },
-    {
-      "cluster_name": "prod-cluster-2",
-      "node_count": 12,
-      "cpu_usage_percent": 78.9,
-      "memory_usage_percent": 82.4,
-      "pod_count": 105,
-      "timestamp": "2024-08-23T14:30:00Z"
-    },
-    {
-      "cluster_name": "test-cluster-1",
-      "node_count": 3,
-      "cpu_usage_percent": 25.7,
-      "memory_usage_percent": 40.3,
-      "pod_count": 18,
-      "timestamp": "2024-08-23T14:30:00Z"
-    }
-  ]
+  "inputData": {
+    "kubernetes_cluster_metrics": [
+      {
+        "cluster_name": "prod-cluster-1",
+        "node_count": 10,
+        "cpu_usage_percent": 68.5,
+        "memory_usage_percent": 75.2,
+        "pod_count": 87,
+        "timestamp": "2024-08-23T14:30:00Z"
+      },
+      {
+        "cluster_name": "dev-cluster-2",
+        "node_count": 5,
+        "cpu_usage_percent": 42.3,
+        "memory_usage_percent": 58.7,
+        "pod_count": 35,
+        "timestamp": "2024-08-23T14:30:00Z"
+      },
+      {
+        "cluster_name": "staging-cluster-1",
+        "node_count": 7,
+        "cpu_usage_percent": 55.1,
+        "memory_usage_percent": 63.9,
+        "pod_count": 62,
+        "timestamp": "2024-08-23T14:30:00Z"
+      },
+      {
+        "cluster_name": "prod-cluster-2",
+        "node_count": 12,
+        "cpu_usage_percent": 78.9,
+        "memory_usage_percent": 82.4,
+        "pod_count": 105,
+        "timestamp": "2024-08-23T14:30:00Z"
+      },
+      {
+        "cluster_name": "test-cluster-1",
+        "node_count": 3,
+        "cpu_usage_percent": 25.7,
+        "memory_usage_percent": 40.3,
+        "pod_count": 18,
+        "timestamp": "2024-08-23T14:30:00Z"
+      }
+    ]
+  }
 }
 ```
 
 13. Monitor AWS Lambda and Cloudwatch TODO
+We can navigate over the Lambda Console, find our `*QueryBedrockLambdaFunctiondev*` function and click `Monitor`. We can also view the CloudWatch logs and see the logging we have in place. For now, we are just using simple logging. You can look into Winston Logger, Lambda Power Tools, or other extensions to help improve your overall logging.
 
+14. Promote to Production
+Finally, if everything above has succeeded, we can navigate back to CodePipeline -> Pipelines -> `CdkCodePipeline`
+Now we can scroll down to the `ProductionStage` where we see `PromoteToProd` as a Manual Approval Step. Click `Review`, and you can approve this. This will now create an entirely new CloudFormation Stack for your Production environment, which you can use with real users.
+
+15. Build even more! The beauty of this CDK Application is that you can add so much more to it, from something as simple as enhancing your prompt in the Lambda function to creating entire APIs around this by adding in databases, IoT Pub/ Sub, S3 buckets, more Lambdas for additional functionality, authentication/ authorization, and so much more. This is just the initial building foundation for you to continuously add on and make this a full fledged product.
 
 
 ## Architecture Overview
