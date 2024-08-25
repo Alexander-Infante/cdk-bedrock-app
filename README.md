@@ -22,26 +22,27 @@ npm install
 
 2. Create a Github Access Token
 
-2a. Navigate to Github -> Settings -> Developer Settings -> Personal Access Tokens -> Tokens (classic)
+- 2a. Navigate to Github -> Settings -> Developer Settings -> Personal Access Tokens -> Tokens (classic)
 
-2b. Click `Generate new token (classic)` and select the following settings:
-- repo (all)
-- admin:repo_hook (all)
+- 2b. Click `Generate new token (classic)` and select the following settings:
+ - repo (all)
+ - admin:repo_hook (all)
 
-2c. Put the token in AWS SecretsManager
-- Navigate to the AWS Console and click on SecretsManager, click on `Store a new secret`
-- `Other type of secret` -> `Plaintext`
-- Delete the JSON object and paste in the Github Access Token from the previous step
-- Name the token, you can keep it as `github-token`
-- No rotation or other configurations for now
+- 2c. Put the token in AWS SecretsManager
+  - Navigate to the AWS Console and click on SecretsManager, click on `Store a new secret`
+  - `Other type of secret` -> `Plaintext`
+  - Delete the JSON object and paste in the Github Access Token from the previous step
+  - Name the token, you can keep it as `github-token`
+  - No rotation or other configurations for now
 
-2d. Follow the steps above (in 2c) to place in this plaintext value into SecretsManager
-- Secret name: `cdk-default-account`
-- Secret plaintext value: <your AWS Account ID, found in the top right corner of the console>
+- 2d. Follow the steps above (in 2c) to place in this plaintext value into SecretsManager
+  - Secret name: `cdk-default-account`
+  - Secret plaintext value: <your AWS Account ID, found in the top right corner of the console>
 
 ![SecretsManager_Photo](photos/SecretsManager.png)
 
 3. Get AWS Bedrock Access
+
 Naviagte to Bedrock in the AWS Console, and towards the bottom left find `Model access` and get all model access
 NOTE: This repo uses Anthropic Claude3 Haiku, so it is important to get that model (unless you want to change it)
 
@@ -50,20 +51,16 @@ NOTE: This repo uses Anthropic Claude3 Haiku, so it is important to get that mod
 4. Create an IAM user for you to grant access to deploy
 NOTE: It is better to use AWS SSO to manage your users, but in the interest of time we are making a very simplified user to test locally.
 
-4a. Navigate to the IAM section within the AWS Console and click on `Users`
-
-4b. Click `Create User`, give it a name that you will remember (in my case, it's `alex_cs_cli`), and do NOT click `Provide user access to the AWS Management Console`
-
-4c. For simplicity, just select `Attach Policies Directly` and grant `AdministratorAccess`
-
-4d. Click `Create User`
-
-4e. Navigate to that new user and click `Create access key` and save those keys securely somewhere
+- 4a. Navigate to the IAM section within the AWS Console and click on `Users`
+- 4b. Click `Create User`, give it a name that you will remember (in my case, it's `alex_cs_cli`), and do NOT click `Provide user access to the AWS Management Console`
+- 4c. For simplicity, just select `Attach Policies Directly` and grant `AdministratorAccess`
+- 4d. Click `Create User`
+- 4e. Navigate to that new user and click `Create access key` and save those keys securely somewhere
 
 5. Configure your AWS profile locally
-5a. Run `aws configure --profile <insert name here>` in your terminal
-5b. Paste in the AccessKey and SecretAccessKey from the step before
-5c. `us-east-1` and `json` respectively, all lowercase
+- 5a. Run `aws configure --profile <insert name here>` in your terminal
+- 5b. Paste in the AccessKey and SecretAccessKey from the step before
+- 5c. `us-east-1` and `json` respectively, all lowercase
 
 ![IAM_Setup_Photo](photos/IAM_Setup.png)
 
@@ -77,15 +74,15 @@ const githubRepo = "Alexander-Infante/cdk-bedrock-app";
 ```
 
 7. Deploy the pipeline:
-7a. CDK Bootstrap for your AWS Account
+- 7a. CDK Bootstrap for your AWS Account
 ```
 cdk bootstrap --profile <insert name here>
 ```
-7b. CDK Synth to check everything
+- 7b. CDK Synth to check everything
 ```
 cdk synth --profile <insert name here>
 ```
-7c. CDK Deploy the stack
+- 7c. CDK Deploy the stack
 ```
 cdk deploy --profile <insert name here>
 ```
@@ -164,14 +161,18 @@ Sample request body
 }
 ```
 
-13. Monitor AWS Lambda and Cloudwatch TODO
+13. Monitor AWS Lambda and Cloudwatch
+
 We can navigate over the Lambda Console, find our `*QueryBedrockLambdaFunctiondev*` function and click `Monitor`. We can also view the CloudWatch logs and see the logging we have in place. For now, we are just using simple logging. You can look into Winston Logger, Lambda Power Tools, or other extensions to help improve your overall logging.
 
 14. Promote to Production
+
 Finally, if everything above has succeeded, we can navigate back to CodePipeline -> Pipelines -> `CdkCodePipeline`
 Now we can scroll down to the `ProductionStage` where we see `PromoteToProd` as a Manual Approval Step. Click `Review`, and you can approve this. This will now create an entirely new CloudFormation Stack for your Production environment, which you can use with real users.
 
-15. Build even more! The beauty of this CDK Application is that you can add so much more to it, from something as simple as enhancing your prompt in the Lambda function to creating entire APIs around this by adding in databases, IoT Pub/ Sub, S3 buckets, more Lambdas for additional functionality, authentication/ authorization, and so much more. This is just the initial building foundation for you to continuously add on and make this a full fledged product.
+15. Build even more! 
+
+The beauty of this CDK Application is that you can add so much more to it, from something as simple as enhancing your prompt in the Lambda function to creating entire APIs around this by adding in databases, IoT Pub/ Sub, S3 buckets, more Lambdas for additional functionality, authentication/ authorization, and so much more. This is just the initial building foundation for you to continuously add on and make this a full fledged product.
 
 
 ## Architecture Overview
