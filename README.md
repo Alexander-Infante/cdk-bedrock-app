@@ -10,8 +10,6 @@ This project demonstrates how to build and deploy an API that leverages AWS Bedr
    - [Installation guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 5. AWS CDK installed
    - [Installation guide](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_install)
-6. CDK environment bootstrapped for your AWS Account
-   - [Bootstrapping guide](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_bootstrap)
 
 ## Getting Started
 
@@ -25,8 +23,8 @@ npm install
 - 2a. Navigate to Github -> Settings -> Developer Settings -> Personal Access Tokens -> Tokens (classic)
 
 - 2b. Click `Generate new token (classic)` and select the following settings:
- - repo (all)
- - admin:repo_hook (all)
+  - repo (all)
+  - admin:repo_hook (all)
 
 - 2c. Put the token in AWS SecretsManager
   - Navigate to the AWS Console and click on SecretsManager, click on `Store a new secret`
