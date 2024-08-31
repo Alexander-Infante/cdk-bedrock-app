@@ -227,6 +227,16 @@ AWS Bedrock is a fully managed service that provides easy access to high-perform
 6. Bedrock processes the data and returns a summary.
 7. The Lambda function returns this summary as the API response.
 
+## Top K and Top P Values Explained
+
+![TopKTopP_Photo](photos/TopKTopP.png)
+
+Top K
+* The top number of words that are selected (ex. "top 5 when ranked by probability")
+
+Top P/ Nucleus Sampling
+* Cumulative probability grouped together to further refine the group
+
 ## Useful Commands
 
 * `npm run build`   Compile TypeScript to JS
