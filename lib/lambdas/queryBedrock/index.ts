@@ -25,13 +25,7 @@ export const handler = async (event: any): Promise<any> => {
      * This adjusting of the prompt is called "Prompt Engineering"
      * https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview
      */
-    const prompt = `Summarize the following data of kubernetes clusters: ${JSON.stringify(requestBody.inputData)} \n
-    and output the format as this
-
-    Most at risk cluster:
-    Healthiest cluster:
-    Summary of data:
-    `;
+    const prompt = `Summarize the following data of kubernetes clusters: ${JSON.stringify(requestBody.inputData)}`;
 
     /**
      * NOTE: Different models expect different parameteres for the InvokeModelCommand

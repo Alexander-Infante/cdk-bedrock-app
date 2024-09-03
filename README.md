@@ -19,8 +19,6 @@ This project demonstrates how to build and deploy an API that leverages AWS Bedr
 npm install
 ```
 
-NOTE PUG: Ensure everything is in the correct region (us-east-1)
-
 2. Create a Github Access Token
 
 - 2a. Navigate to Github -> Settings -> Developer Settings -> Personal Access Tokens -> Tokens (classic)
@@ -30,6 +28,7 @@ NOTE PUG: Ensure everything is in the correct region (us-east-1)
   - admin:repo_hook (check so all children checks are enabled too)
 
 - 2c. Put the token in AWS SecretsManager
+  - NOTE: Make sure you are in us-east-1
   - Navigate to the AWS Console and click on SecretsManager, click on `Store a new secret`
   - `Other type of secret` -> `Plaintext`
   - Delete the JSON object and paste in the Github Access Token from the previous step
@@ -37,12 +36,15 @@ NOTE PUG: Ensure everything is in the correct region (us-east-1)
   - No rotation or other configurations for now
 
 - 2d. Follow the steps above (in 2c) to place in this plaintext value into SecretsManager
+  - NOTE: Make sure you are in us-east-1
   - Secret name: `cdk-default-account`
   - Secret plaintext value: <your AWS Account ID, found in the top right corner of the console>
 
 ![SecretsManager_Photo](photos/SecretsManager.png)
 
 3. Get AWS Bedrock Access
+
+- NOTE: Make sure you are in us-east-1
 
 Naviagte to Bedrock in the AWS Console, and towards the bottom left find `Model access` and get all model access
 NOTE: This repo uses Anthropic Claude3 Haiku, so it is important to get that model (unless you want to change it)
@@ -62,6 +64,7 @@ NOTE: It is better to use AWS SSO to manage your users, but in the interest of t
 - 5a. Run `aws configure --profile <insert name here>` in your terminal
 - 5b. Paste in the AccessKey and SecretAccessKey from the step before
 - 5c. `us-east-1` and `json` respectively, all lowercase
+- 5d. run `aws iam list-users --profile <insert name here>` to check that you have authenticated properly. This command does nothing other than ensure you are not seeing errors. 
 
 ![IAM_Setup_Photo](photos/IAM_Setup.png)
 
@@ -73,7 +76,8 @@ lib/cdk-pipeline-stack.ts
 const cdkDefaultRegion = "us-east-1";
 const githubRepo = "Alexander-Infante/cdk-bedrock-app";
 ```
-PUG TODO- have people add/ commit/ push to main branch
+
+6b. !! Git add, git commit, and git push to your `main` branch- this is very important before the next step!
 
 7. Deploy the pipeline:
 - 7a. CDK Bootstrap for your AWS Account
@@ -167,18 +171,65 @@ Sample request body
 
 We can navigate over the Lambda Console, find our `*QueryBedrockLambdaFunctiondev*` function and click `Monitor`. We can also view the CloudWatch logs and see the logging we have in place. For now, we are just using simple logging. You can look into Winston Logger, Lambda Power Tools, or other extensions to help improve your overall logging.
 
-14. Promote to Production
+14. Improve the prompt and push those changes to the `main` branch to redeploy into Staging
+
+```
+const prompt = `You are an expert Kubernetes cluster analyst. 
+Your task is to analyze and summarize the provided Kubernetes cluster metrics data.
+
+Here's the data:
+${JSON.stringify(requestBody.inputData, null, 2)}
+
+Please provide a comprehensive summary of this data, including:
+
+1. Overview:
+   - Total number of clusters
+   - Total number of nodes across all clusters
+   - Total number of pods across all clusters
+
+2. Cluster Analysis:
+   - For each cluster, provide:
+     a) Cluster name
+     b) Number of nodes
+     c) Number of pods
+     d) CPU usage percentage
+     e) Memory usage percentage
+
+3. Resource Utilization:
+   - Identify the cluster with the highest CPU usage
+   - Identify the cluster with the highest memory usage
+   - Calculate and report the average CPU and memory usage across all clusters
+
+4. Scale and Performance:
+   - Rank the clusters from largest to smallest based on node count
+   - Analyze the relationship between node count and pod count
+   - Identify any clusters that might be under or over-utilized based on their metrics
+
+5. Recommendations:
+   - Suggest any potential optimizations or areas of concern based on the data
+   - Identify which clusters might need scaling up or down
+
+6. Timestamp Analysis:
+   - Comment on the timestamp of the data and its relevance
+
+Please provide your analysis in a clear, structured format using markdown for better readability.`;
+```
+
+15. Promote to Production
 
 Finally, if everything above has succeeded, we can navigate back to CodePipeline -> Pipelines -> `CdkCodePipeline`
 Now we can scroll down to the `ProductionStage` where we see `PromoteToProd` as a Manual Approval Step. Click `Review`, and you can approve this. This will now create an entirely new CloudFormation Stack for your Production environment, which you can use with real users.
 
-15. Build even more! 
+16. Build even more! 
 
 The beauty of this CDK Application is that you can add so much more to it, from something as simple as enhancing your prompt in the Lambda function to creating entire APIs around this by adding in databases, IoT Pub/ Sub, S3 buckets, more Lambdas for additional functionality, authentication/ authorization, and so much more. This is just the initial building foundation for you to continuously add on and make this a full fledged product.
 
 
 ## Architecture Overview
 ![Architecture_Photo](photos/CDK_Bedrock.png)
+
+## How this works with your application
+![Integration_Photo](photos/Integration.png)
 
 ## What is AWS CDK?
 
