@@ -2,7 +2,7 @@
 
 This project demonstrates how to build and deploy an API that leverages AWS Bedrock using the AWS CDK (Cloud Development Kit) with TypeScript.
 
-## Prerequisites 
+## Prerequisites
 1. Node.js v18+ installed
 2. TypeScript 3.8+ installed
 3. An AWS Account
@@ -58,26 +58,31 @@ NOTE: It is better to use AWS SSO to manage your users, but in the interest of t
 - 4b. Click `Create User`, give it a name that you will remember (in my case, it's `alex_cs_cli`), and do NOT click `Provide user access to the AWS Management Console`
 - 4c. For simplicity, just select `Attach Policies Directly` and grant `AdministratorAccess`
 - 4d. Click `Create User`
-- 4e. Navigate to that new user and click `Create access key` and save those keys securely somewhere
+- 4e. Navigate to that new user and click `Create access key`
+- 4f. Select the Command Line Interface use case and tick the box for "I understand the above..." and save those keys securely somewhere
+
+![IAM_Setup_Photo](photos/IAM_Setup.png)
+
+![IAM_Usecase_Photo](photos/IAM_Usecase.png)
 
 5. Configure your AWS profile locally
 - 5a. Run `aws configure --profile <insert name here>` in your terminal
 - 5b. Paste in the AccessKey and SecretAccessKey from the step before
 - 5c. `us-east-1` and `json` respectively, all lowercase
-- 5d. run `aws iam list-users --profile <insert name here>` to check that you have authenticated properly. This command does nothing other than ensure you are not seeing errors. 
+- 5d. run `aws iam list-users --profile <insert name here>` to check that you have authenticated properly. This command does nothing other than ensure you are not seeing errors.
 
-![IAM_Setup_Photo](photos/IAM_Setup.png)
+
 
 6. Configure your specific repo and region values in your code
 
-6a. Adjust these lines for your repo
+- 6a. Adjust these lines for your repo
 lib/cdk-pipeline-stack.ts
 ```
 const cdkDefaultRegion = "us-east-1";
 const githubRepo = "Alexander-Infante/cdk-bedrock-app";
 ```
 
-6b. !! Git add, git commit, and git push to your `main` branch- this is very important before the next step!
+- 6b. !! Git add, git commit, and git push to your `main` branch- this is very important before the next step!
 
 7. Deploy the pipeline:
 - 7a. CDK Bootstrap for your AWS Account
@@ -174,7 +179,7 @@ We can navigate over the Lambda Console, find our `*QueryBedrockLambdaFunctionde
 14. Improve the prompt and push those changes to the `main` branch to redeploy into Staging
 
 ```
-const prompt = `You are an expert Kubernetes cluster analyst. 
+const prompt = `You are an expert Kubernetes cluster analyst.
 Your task is to analyze and summarize the provided Kubernetes cluster metrics data.
 
 Here's the data:
@@ -220,7 +225,7 @@ Please provide your analysis in a clear, structured format using markdown for be
 Finally, if everything above has succeeded, we can navigate back to CodePipeline -> Pipelines -> `CdkCodePipeline`
 Now we can scroll down to the `ProductionStage` where we see `PromoteToProd` as a Manual Approval Step. Click `Review`, and you can approve this. This will now create an entirely new CloudFormation Stack for your Production environment, which you can use with real users.
 
-16. Build even more! 
+16. Build even more!
 
 The beauty of this CDK Application is that you can add so much more to it, from something as simple as enhancing your prompt in the Lambda function to creating entire APIs around this by adding in databases, IoT Pub/ Sub, S3 buckets, more Lambdas for additional functionality, authentication/ authorization, and so much more. This is just the initial building foundation for you to continuously add on and make this a full fledged product.
 
