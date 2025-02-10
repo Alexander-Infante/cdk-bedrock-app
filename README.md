@@ -38,7 +38,7 @@ npm install
 - 2d. Follow the steps above (in 2c) to place in this plaintext value into SecretsManager
   - NOTE: Make sure you are in us-east-1
   - Secret name: `cdk-default-account`
-  - Secret plaintext value: <your AWS Account ID, found in the top right corner of the console>
+  - Secret plaintext value: <your AWS Account ID (a 12-digit number), click username in the top right of console to display>
 
 ![SecretsManager_Photo](photos/SecretsManager.png)
 
@@ -59,7 +59,7 @@ NOTE: It is better to use AWS SSO to manage your users, but in the interest of t
 - 4c. For simplicity, just select `Attach Policies Directly` and grant `AdministratorAccess`
 - 4d. Click `Create User`
 - 4e. Navigate to that new user and click `Create access key`
-- 4f. Select the Command Line Interface use case and tick the box for "I understand the above..." and save those keys securely somewhere
+- 4f. Select the Command Line Interface use case and tick the box for "I understand the above..." and save the access key and secret access key securely somewhere
 
 ![IAM_Setup_Photo](photos/IAM_Setup.png)
 
@@ -317,6 +317,6 @@ Top P/ Nucleus Sampling
 If you encounter issues:
 1. Ensure your AWS credentials are correctly set up
 2. Check that you've enabled AWS Bedrock in your account
-3. Verify that your .env file contains the correct account and region information
+3. Verify that your secrets are stored on the proper region
 
 For more help, consult the AWS CDK and Bedrock documentation or reach out to AWS support.
