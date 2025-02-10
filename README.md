@@ -3,7 +3,6 @@
 This project demonstrates how to build and deploy an API that leverages AWS Bedrock using the AWS CDK (Cloud Development Kit) with TypeScript.
 
 ## Prerequisites
-
 1. Node.js v18+ installed
 2. TypeScript 3.8+ installed
 3. An AWS Account
@@ -16,7 +15,6 @@ This project demonstrates how to build and deploy an API that leverages AWS Bedr
 ## Getting Started
 
 1. Install dependencies from the root directory
-
 ```
 npm install
 ```
@@ -26,12 +24,10 @@ npm install
 - 2a. Navigate to Github -> Settings -> Developer Settings -> Personal Access Tokens -> Tokens (classic)
 
 - 2b. Click `Generate new token (classic)` and select the following settings:
-
   - repo (check so all children checks are enabled too)
   - admin:repo_hook (check so all children checks are enabled too)
 
 - 2c. Put the token in AWS SecretsManager
-
   - NOTE: Make sure you are in us-east-1
   - Navigate to the AWS Console and click on SecretsManager, click on `Store a new secret`
   - `Other type of secret` -> `Plaintext`
@@ -56,7 +52,7 @@ NOTE: This repo uses Anthropic Claude3 Haiku, so it is important to get that mod
 ![BedrockAccess_Photo](photos/BedrockAccess.png)
 
 4. Create an IAM user for you to grant access to deploy
-   NOTE: It is better to use AWS SSO to manage your users, but in the interest of time we are making a very simplified user to test locally.
+NOTE: It is better to use AWS SSO to manage your users, but in the interest of time we are making a very simplified user to test locally.
 
 - 4a. Navigate to the IAM section within the AWS Console and click on `Users`
 - 4b. Click `Create User`, give it a name that you will remember (in my case, it's `alex_cs_cli`), and do NOT click `Provide user access to the AWS Management Console`
@@ -70,17 +66,17 @@ NOTE: This repo uses Anthropic Claude3 Haiku, so it is important to get that mod
 ![IAM_Usecase_Photo](photos/IAM_Usecase.png)
 
 5. Configure your AWS profile locally
-
 - 5a. Run `aws configure --profile <insert name here>` in your terminal
 - 5b. Paste in the AccessKey and SecretAccessKey from the step before
 - 5c. `us-east-1` and `json` respectively, all lowercase
 - 5d. run `aws iam list-users --profile <insert name here>` to check that you have authenticated properly. This command does nothing other than ensure you are not seeing errors.
 
+
+
 6. Configure your specific repo and region values in your code
 
 - 6a. Adjust these lines for your repo
-  lib/cdk-pipeline-stack.ts
-
+lib/cdk-pipeline-stack.ts
 ```
 const cdkDefaultRegion = "us-east-1";
 const githubRepo = "Alexander-Infante/cdk-bedrock-app";
@@ -89,49 +85,44 @@ const githubRepo = "Alexander-Infante/cdk-bedrock-app";
 - 6b. !! Git add, git commit, and git push to your `main` branch- this is very important before the next step!
 
 7. Deploy the pipeline:
-
 - 7a. CDK Bootstrap for your AWS Account
-
 ```
 cdk bootstrap --profile <insert name here>
 ```
-
 - 7b. CDK Synth to check everything
-
 ```
 cdk synth --profile <insert name here>
 ```
-
 - 7c. CDK Deploy the stack
-
 ```
 cdk deploy --profile <insert name here>
 ```
 
 8. Monitor CloudFormation for the CodePipeline Stack
-   Navigate over the the AWS Console -> CloudFormation to ensure the CodePipeline Stack deploys properly. I like to monitor the `Events` tab.
-   ![Pipeline_Cfn_Photo](photos/Pipeline_Cfn.png)
+Navigate over the the AWS Console -> CloudFormation to ensure the CodePipeline Stack deploys properly. I like to monitor the `Events` tab.
+![Pipeline_Cfn_Photo](photos/Pipeline_Cfn.png)
+
 
 9. Monitor CodePipeline Deployment
-   You can see your CI/CD Pipeline by navigating to the AWS Console -> CodePipeline => `CdkCodePipeline`
-   Note the steps that it takes to deploy your application and ensure each of them succeeds. For now, let's make sure this works up to our `Dev` Environment and proceed with testing. Once that passes, we can promote this to our `Production` environment.
+You can see your CI/CD Pipeline by navigating to the AWS Console -> CodePipeline => `CdkCodePipeline`
+Note the steps that it takes to deploy your application and ensure each of them succeeds. For now, let's make sure this works up to our `Dev` Environment and proceed with testing. Once that passes, we can promote this to our `Production` environment.
 
 ![Pipeline_Photo](photos/CodePipeline.png)
 
 10. Monitor CloudFormation for the CdkBedrockAppStack
-    Similar to the steps above, monitor CloudFormation (I prefer to look at `Events`) to ensure your deployment succeeds for the main CDK Bedrock App Stack.
-    NOTE that this stack is a stand alone for the `Dev` environment.
-    ![CdkApp_Photo](photos/App_Cfn.png)
+Similar to the steps above, monitor CloudFormation (I prefer to look at `Events`) to ensure your deployment succeeds for the main CDK Bedrock App Stack.
+NOTE that this stack is a stand alone for the `Dev` environment.
+![CdkApp_Photo](photos/App_Cfn.png)
+
 
 11. API Gateway
-    Now we navigate over the the AWS Console -> API Gateway -> Bedrock API dev -> Stages
-    Here we can see the `Dev` stage for our API Gateway, and are able to copy the `Invoke URL` for testing in the next step.
-    ![ApiGateway_Photo](photos/API_GW.png)
+Now we navigate over the the AWS Console -> API Gateway -> Bedrock API dev -> Stages
+Here we can see the `Dev` stage for our API Gateway, and are able to copy the `Invoke URL` for testing in the next step.
+![ApiGateway_Photo](photos/API_GW.png)
 
-12. Postman/ cURL request to `POST` <Invoke URL> + `/v1/analysis` with a request body
+12. Postman/ cURL request to `POST`  <Invoke URL> + `/v1/analysis` with a request body
 
 Sample request body
-
 ```
 {
   "inputData": {
@@ -238,12 +229,11 @@ Now we can scroll down to the `ProductionStage` where we see `PromoteToProd` as 
 
 The beauty of this CDK Application is that you can add so much more to it, from something as simple as enhancing your prompt in the Lambda function to creating entire APIs around this by adding in databases, IoT Pub/ Sub, S3 buckets, more Lambdas for additional functionality, authentication/ authorization, and so much more. This is just the initial building foundation for you to continuously add on and make this a full fledged product.
 
-## Architecture Overview
 
+## Architecture Overview
 ![Architecture_Photo](photos/CDK_Bedrock.png)
 
 ## How this works with your application
-
 ![Integration_Photo](photos/Integration.png)
 
 ## What is AWS CDK?
@@ -251,7 +241,6 @@ The beauty of this CDK Application is that you can add so much more to it, from 
 The AWS CDK (Cloud Development Kit) is an open-source software development framework to define cloud infrastructure in code and provision it through AWS CloudFormation. It allows you to use familiar programming languages to model your applications.
 
 Key benefits:
-
 - Use programming languages you're familiar with (TypeScript, JavaScript, Python, etc.)
 - Leverage object-oriented techniques to create reusable infrastructure components
 - Use high-level constructs that preconfigure cloud resources with proven defaults
@@ -303,21 +292,19 @@ AWS Bedrock is a fully managed service that provides easy access to high-perform
 ![TopKTopP_Photo](photos/TopKTopP.png)
 
 Top K
-
-- The top number of words that are selected (ex. "top 5 when ranked by probability")
+* The top number of words that are selected (ex. "top 5 when ranked by probability")
 
 Top P/ Nucleus Sampling
-
-- Cumulative probability grouped together to further refine the group
+* Cumulative probability grouped together to further refine the group
 
 ## Useful Commands
 
-- `npm run build` Compile TypeScript to JS
-- `npm run watch` Watch for changes and compile
-- `npm run test` Perform the jest unit tests
-- `npx cdk deploy` Deploy this stack to your default AWS account/region
-- `npx cdk diff` Compare deployed stack with current state
-- `npx cdk synth` Emits the synthesized CloudFormation template
+* `npm run build`   Compile TypeScript to JS
+* `npm run watch`   Watch for changes and compile
+* `npm run test`    Perform the jest unit tests
+* `npx cdk deploy`  Deploy this stack to your default AWS account/region
+* `npx cdk diff`    Compare deployed stack with current state
+* `npx cdk synth`   Emits the synthesized CloudFormation template
 
 ## Further Learning
 
@@ -328,7 +315,6 @@ Top P/ Nucleus Sampling
 ## Troubleshooting
 
 If you encounter issues:
-
 1. Ensure your AWS credentials are correctly set up
 2. Check that you've enabled AWS Bedrock in your account
 3. Verify that your secrets are stored on the proper region
